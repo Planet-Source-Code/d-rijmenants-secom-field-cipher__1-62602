@@ -1,0 +1,167 @@
+
+The SECOM cipher is a handcipher, used to encrypt messages containing letters, numbers and spaces. It is one of the most secure pencel-and paper ciphers ever. SECOM uses four steps: calculating the key phrase digits, the straddling checkerboard, and two columnar transpositions, of which one disrupted. The combination of fractioning by the checkerboard and the double disrupted transposition makes SECOM a higly secure encryption methode.
+
+We will demostrate the encryption technique by the following example: 
+
+Plain text: RV TOMORROW AT 1400PM TO COMPLETE TRANSACTION
+            USE DEADDROP AS USUAL
+Key Phrase: MAKE NEW FRIENDS BUT KEEP THE OLD
+
+Take the first 20 letters of the keyphrase and divide it into two halves. Within each half, we assign 1 to the letter earliest in the alphabet, and so on, treating 0 as the last number, and assigning digits in order to identical letters.
+
+ MAKENEWFRI ENDSBUTKEE
+ 7162830495 3728109645
+
+The two 10 digit results are then added, digit by digit, ignoring carries.
+
+  7162830495
+ +3728109645
+  ----------
+  0880939030
+
+The result of the addition is then expanded to another 50 pseudorandom digits through chain addition. Add the first two digits in the group together, take only the last digit of the result and append it to the end of the group, then ignore the first digit, and repeat the process.
+
+ 0880939030
+ ----------
+ 8689229338
+ 4471412612
+ 8185538730
+ 9930815039
+ 8238965327<-
+
+Take the last row, assign 1 to the smallest digit, and so on, treating 0 as the last number, and assigning digits in order to identical digits. Those 10 digits are used as the top row of numbers for a straddling checkerboard.
+
+ 8238965327
+ 8139065427
+
+The second row of the checkerboard contains the highest frequency letters ESTONIA, with a blank in the 3th , 6 th and 9 th square. Write the digits, located above an empty square, downwards in the first column. Complete the checkerboard with the following letters and numbers:
+
+ B C D F G H J K L M
+ P Q R U V W X Y Z *
+ 1 2 3 4 5 6 7 8 9 0
+
+However, we start the filling of the rows in the column, pointed to by the digit at the left of that row. Complete until the end of that row and proceed at the beginning of the row.
+
+  | 8 1 3 9 0 6 5 4 2 7
+  +--------------------
+  | E S   T O   N I   A
+ 3| L M B C D F G H J K
+ 6| W X Y Z * P Q R U V
+ 2| 0 1 2 3 4 5 6 7 8 9
+
+We convert the plain text into numbers according to the straddling checkerboard:
+
+ R V * TOM OR R OW * AT* 1 4 0 0 P M * TO* C OM P L ETE* 
+ 64676090310646406860796021202828663160906039031663889860
+
+ TR ANSAC TION* U SE* D EAD D R OP * AS* U SU AL
+ 964751739940560621860308730306406660716062162738
+
+In our example, several spaces are used. However, it is recommended to omit all spaces where legibility preserved.
+
+To determine the number of columns for the two transpositions, we take the unequal digits, one by one, starting at the end of the last row of the 50 generated numbers, from right to left, and add them until the result is more than 9. The result is the width of the first columnar transposition. We continue with reading off unequal digits, from right to left, and add them to retrieve the width of the second columnar transposition:
+
+ ....815039
+ 8238965327<-
+
+1st transposition: 3 + 2 + 7 = 12 columns
+2nd transposition: 6 + 5 = 11 columns
+
+Take the 10 digits from the second half of the key phrase, and the 10 digits used for the straddling checkerboard and add them, digit by digit, ignoring carries:
+
+  3728109645 second half of key phrase
+ +8139065427 Checkerboard
+  ----------
+  1857164062 Result
+
+The keys for the two transpositions are taken by reading out the 50 numbers by columns, using the 10 digits as a transposition key. Again, 0 is last.
+
+ 1857164062
+ ----------
+ 8689229338
+ 4471412612
+ 8185538730
+ 9930815039
+ 8238965327
+
+The digits for the transpositions after reading off the 23 required digits:
+
+ 848982458982 09792855878
+
+The first transposition is a simple columnar transposition. We use the first 12 of the 23 digits as transposition key, and fill the transposition block with the numbers, obtained by the checkerboard conversion. At this stage, null digits are appended to the message, so that it will fill a whole number of 5-digit groups. In our example, we add one null digit.
+
+ 848982458982
+ ------------
+ 646760903106
+ 464068607960
+ 212028286631
+ 609060390316
+ 638898609647
+ 517399405606
+ 218603087303
+ 064066607160
+ 621627380
+
+The message is then read off  in columns, using the top row digits as transposition key:
+
+ 088089367 60167630 461031162 962364063 008900808 642665206
+ 642987841 662699062 376095770 06314006 700083606 19636631
+
+The second transposition is a disrupted columnar transposition. We use the last 11 of the 23 digits as transposition key. The first triangular area starts at the top of the column which will be read out first, and extends to the end of the first row. It continues in the next row, starting one column later, and so on until it includes only the digit in the last column.
+
+Next, if possible, after one full row, a second triangular area starts, this time in the column which will be read out second. A third, fourth, and more triangular areas can be added, if enough rows available. The number of triangular areas may never exceed the number of columns. In our example, no more than 11 triangular areas should be drawn.
+
+Since we know that the message is 105 digits long, we know that we have to fill 9 rows with 11 digits, and  1 row with 6 digits. First, we fill the transposition block row by row with the numbers from the first transposition, first avoiding the triangular areas:
+
+ 09792855878
+ -----------
+ 0880
+ 89367
+ 601676
+ 3046103
+ 11629623
+ 640630089
+ 0080864266
+ 52066429878
+ 416626
+ 990623XXXXX
+
+Next, we fill in the triangular areas, row by row as well:
+
+ 09792855878
+ -----------
+ 08807609577
+ 89367006314
+ 60167600670
+ 30461030083
+ 11629623606
+ 64063008919
+ 00808642666
+ 52066429878
+ 41662636631
+ 990623XXXXX
+
+Again, the message is read off  in columns, using the top row digits as transposition key:
+
+ 7771938622 000320423 960038296 8314608060 717801673 
+ 6060606463 536069686 740369681 8900140219 0666260666 
+ 0863160549
+
+Finally, the digits are divided in groups of 5 to get the fully encrypted message:
+
+ 77719 38622 00032 04239 60038 29683
+ 14608 06071 78016 73606 06064 63536
+ 06968 67403 69681 89001 40219 06662
+ 60666 08631 60549
+
+Decrypting a message:
+
+To decrypt a message, we use the key phrase to calculate the digits for the checkerboard and the two transpositions. Next, we apply the transpositions in reversed order.
+
+We create the block for the second -disrupted - transposition, with the appropriate column lengths and triangular areas. We fill in the encrypted message column by column, according to the 2nd transposition key. First, we read of the message row by row, avoiding the triangular areas. Next, we read off the triangular areas, also row by row.
+
+The result is filled in the first - simple - transposition block, also created with the appropriate column lengths, column by column according to the 1st transposition key. Again, we read off the digits row by row.
+
+The resulting sequence of digits is converted to plain text, using the checkerboard. Note that, at the end of the sequence, up to four null digits could be added to complete a block of five, and should be disregarded during conversion.
+
+ 
